@@ -1,0 +1,37 @@
+select id_doc, id_sent, position
+from positions
+join parses on positions.id_parse = parses.id
+where parses.id in
+(select parses.id
+from parses
+join poses on poses.id = parses.id_pos
+where poses.pos = "PROPN")
+
+
+
+select id_doc, id_sent, position
+from positions
+join parses on positions.id_parse = parses.id
+where parses.id in
+(select parses.id
+from parses
+join poses on poses.id = parses.id_pos
+where poses.pos = "PROPN")
+and (id_doc, id_sent, position + 1) in
+(select id_doc, id_sent, position
+from positions
+join parses on positions.id_parse = parses.id
+where parses.id in
+(select parses.id
+from parses
+join poses on poses.id = parses.id_pos
+where poses.pos = "VERB"))
+and (id_doc, id_sent, position + 2) in
+(select id_doc, id_sent, position
+from positions
+join parses on positions.id_parse = parses.id
+where parses.id in
+(select parses.id
+from parses
+join poses on poses.id = parses.id_pos
+where poses.pos = "NOUN"))
