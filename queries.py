@@ -108,7 +108,7 @@ def select(params: list) -> list:
         return [x for x in result_1 if (x[0], x[1], x[2] + 1) in result_2 and (x[0], x[1], x[2] + 2) in result_3]
 
 
-def process_item(item: str) -> tuple or False:
+def process_item(item: str) -> tuple:
     '''
     Функция, которая обрабатывает запрос и выдает либо его тип и его самого в нужном формате,
     либо то, что такой запрос невалидный
@@ -126,12 +126,12 @@ def process_item(item: str) -> tuple or False:
         if re.search(r'^\w+\+([A-Z]+)$', item).group(1) in poses:
             type_query = 'lemma+pos'
         else:
-            return False
+            return False, False
     elif re.search(r'^\w+$', item):
         type_query = 'lemma'
         item = nlp_spacy(item)[0].lemma_
     else:
-        return False
+        return False, False
     return type_query, item
 
 
