@@ -11,7 +11,7 @@ db.app = app
 db.init_app(app)
 
 title = 'Корпус фанфиков'
-url = 'http://127.0.0.1:5000'
+url = 'tokubetsu.pythonanywhere.com'
 doc_dir = 'docs/'
 
 
