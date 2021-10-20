@@ -1,0 +1,91 @@
+.center-container {
+	margin-left: auto;
+	margin-right: auto;
+	width: 60%;
+}
+
+.content-container {
+	margin: 0;
+	padding: 50px 10%;
+	background-color: #f8f8f8;
+	border-bottom: 2px solid #000;
+	border-right: 2px solid #000;
+	border-left: 2px solid #000;
+}
+
+.link-center {
+	text-align: center;
+	padding: 0;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.link-center a {
+	font-size: 35px;
+}
+
+.word {
+    display: inline-block;
+    white-space: nowrap;
+}
+
+.resline .word {
+	position: relative;
+}
+
+.resline .word .word-info {
+	position: absolute;
+	top: 30px;
+	background-color: #f8f8f8;
+	border: 1px solid #000;
+	padding: 3px;
+	visibility: hidden;
+}
+
+.resline .word:hover .text{
+	text-decoration: underline;
+}
+
+.resline .word:hover .word-info {
+	visibility: visible;
+	z-index: 1;
+}
+
+.pagination-find {
+	display: block;
+	text-align: center;
+}
+
+.pag-link {
+	display: inline-block;
+}
+
+.pag-links .cur {
+	padding: 3px;
+	border: 1px solid #000;
+}
+
+.pag-links .cur p {
+	margin: 0;
+}
+
+.gray {
+	color: gray;
+}
+
+.pos-tags .first-col {
+	width: 15%;
+	border: 1px solid black;
+	text-align: center;
+}
+
+.pos-tags .second-col {
+	width: 30%;
+	border: 1px solid black;
+	text-align: center;
+}
+
+.pos-tags .first-row {
+	color: white;
+	background-color: gray;
+}
