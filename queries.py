@@ -1,48 +1,9 @@
-from flask_sqlalchemy import SQLAlchemy
+from models import *
 import re
 import spacy
+from time import time
 
 nlp_spacy = spacy.load("ru_core_news_sm")
-db = SQLAlchemy()
-
-
-class Lemmas(db.Model):
-    __tablename__ = "lemmas"
-
-    id = db.Column('id', db.Integer, primary_key=True)
-    lemma = db.Column('lemma', db.Text)
-
-
-class Parses(db.Model):
-    __tablename__ = "parses"
-
-    id = db.Column('id', db.Integer, primary_key=True)
-    id_word = db.Column('id_word', db.Integer)
-    id_lemma = db.Column('id_lemma', db.Integer)
-    id_pos = db.Column('id_pos', db.Integer)
-
-
-class Poses(db.Model):
-    __tablename__ = "poses"
-
-    id = db.Column('id', db.Integer, primary_key=True)
-    pos = db.Column('pos', db.Text)
-
-
-class Positions(db.Model):
-    __tablename__ = "positions"
-
-    id_parse = db.Column('id_parse', db.Integer)
-    id_doc = db.Column('id_doc', db.Integer, primary_key=True)
-    id_sent = db.Column('id_sent', db.Integer, primary_key=True)
-    id_position = db.Column('position', db.Integer, primary_key=True)
-
-
-class Words(db.Model):
-    __tablename__ = "words"
-
-    id = db.Column('id', db.Integer, primary_key=True)
-    word = db.Column('word', db.Text)
 
 
 def find_parses(type_query: str, query: str) -> list:
@@ -68,11 +29,12 @@ def find_parses(type_query: str, query: str) -> list:
                 .filter(Lemmas.lemma == lemma).filter(Poses.pos == pos).all()]
 
 
-def select_unigram(type_query: str, query: str) -> list:
+def select_unigram(type_query: str, query: str, n: int = 0) -> list:
     '''
     Функция, которая выдает вхождения запроса (униграммы)
     :param type_query: тип запроса: {pos, word, lemma, lemma+pos}
     :param query: строка запроса
+    :param n: номер слова в n-грамме
     :return: список кортежей с местоположением каждого вхождения запроса: (id_doc, id_sent, position)
     '''
     parses = find_parses(type_query, query)
@@ -80,10 +42,10 @@ def select_unigram(type_query: str, query: str) -> list:
     i = 0
     while i < len(parses):
         if i+999 < len(parses):
-            result.extend([(position.id_doc, position.id_sent, position.id_position) for position in Positions.query
+            result.extend([(position.id_doc, position.id_sent, position.id_position - n) for position in Positions.query
                           .join(Parses, Positions.id_parse == Parses.id).filter(Parses.id.in_(parses[i:i+999])).all()])
         else:
-            result.extend([(position.id_doc, position.id_sent, position.id_position) for position in Positions.query
+            result.extend([(position.id_doc, position.id_sent, position.id_position - n) for position in Positions.query
                           .join(Parses, Positions.id_parse == Parses.id).filter(
                 Parses.id.in_(parses[i:])).all()])
         i += 999
@@ -96,19 +58,19 @@ def select(params: list) -> list:
     :param params: список кортежей с типом запроса и самой строкой запроса
     :return: список кортежей с местоположением каждого вхождения запроса: (id_doc, id_sent, position)
     '''
-    result_1 = select_unigram(params[0][0], params[0][1])
+    result_1 = set(select_unigram(params[0][0], params[0][1]))
     if len(params) == 1:
-        return result_1
+        return list(result_1)
     elif len(params) == 2:
-        result_2 = select_unigram(params[1][0], params[1][1])
-        return [x for x in result_1 if (x[0], x[1], x[2] + 1) in result_2]
+        result_2 = set(select_unigram(params[1][0], params[1][1], 1))
+        return list(result_1.intersection(result_2))
     else:
-        result_2 = select_unigram(params[1][0], params[1][1])
-        result_3 = select_unigram(params[2][0], params[2][1])
-        return [x for x in result_1 if (x[0], x[1], x[2] + 1) in result_2 and (x[0], x[1], x[2] + 2) in result_3]
+        result_2 = set(select_unigram(params[1][0], params[1][1], 1))
+        result_3 = set(select_unigram(params[2][0], params[2][1], 2))
+        return list(result_1.intersection(result_2, result_3))
 
 
-def process_item(item: str) -> tuple:
+def process_item(item: str) -> tuple or False:
     '''
     Функция, которая обрабатывает запрос и выдает либо его тип и его самого в нужном формате,
     либо то, что такой запрос невалидный

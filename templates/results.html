@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+	<ol class="outer">
+		{% for line in res %}
+			<li class="resline">
+				{% for word in line[1:] %}
+					{% if word['PoS'] != 'PUNCT' %}
+						<div class="word">
+							{% if word['marked'] %}
+								<span class="text"><b>{{ word['text'] }}</b></span>
+							{% else %}
+								<span class="text">{{ word['text'] }}</span>
+							{% endif %}
+							<div class="word-info">
+								lemma: {{ word['lemma'] }}
+								</br>
+								pos: {{ word['PoS'] }}
+							</div>
+						</div>
+					{% else %}
+						{{ word['text'] }}
+					{% endif %}
+				{% endfor %}
+				[«{{ line[0]['title'] }}», {{ line[0]['author'] }}, {{ line[0]['data'] }}]
+				</br>
+			</li>
+		{% endfor %}
+	</ol>
+
+	<div class="pagination-find">
+		<div class="pag-num">
+			<p>Всего страниц: {{ num }}</p>
+		</div>
+		<div class="pag-links">
+			<div class="pag-link prev">
+				{% if pages[0] > 0 %}
+					<a href="/pagination/{{ query }}+{{ pages[0] }}">Предыдущая страница</a>
+				{% else %}
+					<p class="gray">Предыдущая страница</p>
+				{% endif %}
+			</div>
+			<div class="pag-link cur">
+				<p>{{ pages[1] }}</p>
+			</div>
+			<div class="pag-link post">
+				{% if pages[2] <= num %}
+					<a href="/pagination/{{ query }}+{{ pages[2] }}">Следующая страница</a>
+				{% else %}
+					<p class="gray">Следующая страница</p>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- https://getbootstrap.com/docs/4.5/components/forms/ -->
+	<form action="/find">
+		<div class="form-group">
+			<label for="query"><b>Введите Ваш запрос:</b></label>
+			<input type="text" class="form-control" id="query" name="query">
+		</div>
+		<button type="submit" class="btn btn-primary btn-dark">Поиск</button>
+	</form>
+	
+	</br>
+	</br>
+	
+	<div class="pos-tags">
+		<p>Набор pos-тэгов корпуса:</p>
+		<table>
+			<tr class="first-row">
+				<td class="first-col">POS-tag</td>
+				<td class="second-col">Описание</td>
+			</tr>
+			{% for pos in poses %}
+				<tr>
+					<td class="first-col">{{ pos[0] }}</td>
+					<td class="second-col">{{ pos[1] }}</td>
+				</tr>
+			{% endfor %}
+		</table>
+	</div>
+
+{% endblock %}
