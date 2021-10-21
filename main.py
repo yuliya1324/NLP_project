@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for
 from queries import db, process_query
 import json
+from datetime import date
 
 app = Flask(__name__)
 
@@ -11,10 +12,11 @@ db.app = app
 db.init_app(app)
 
 title = 'Корпус фанфиков'
-url = 'tokubetsu.pythonanywhere.com'
+url = 'http://tokubetsu.pythonanywhere.com'
 doc_dir = 'docs/'
 
 
+last_check = date.today()
 results = {}
 temp_data = [{}, []]
 poses = [
@@ -37,9 +39,10 @@ poses = [
 
 
 def recount_results(point=100):
-    global results
-    keys = sorted(results.keys(), key=lambda x: results[x][0], reverse=True)[0:point]
-    results = {key: results[key] for key in keys}
+    global results, last_check
+    if date.today() != last_check:
+        keys = sorted(results.keys(), key=lambda x: results[x][0], reverse=True)[0:point]
+        results = {key: results[key] for key in keys}
 
 
 def get_marked(sentence, mark, n=1):
