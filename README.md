@@ -2,20 +2,24 @@
 
 [Ссылка на сайт](http://tokubetsu.pythonanywhere.com/)
 
-`docs`
+`texts` - директория с сырыми текстами
 
-`static`
+`docs` - директория с файлами корпуса
 
-`templates`
+`Crawler.ipynb` - краулер, собирающий тексты со страницы сайта 
 
-`texts`
+`Parsing.ipynb` - предобработка текстов, разметка
 
-`Crawler.ipynb`
+`base.db` - база данных корпуса
 
-`Parsing.ipynb`
+`db_fill.py` - файл заполнения базы данных
 
-`base.db`
+`models.py` - классы с моделями SQLAlchemy для базы данных
 
-`db_fill.py`
+`queries.py` - обработка запросов
 
-`db_fill.py`
+`static` - статичные элементы сайта
+
+`templates` - шаблоны
+
+`main.py` - основной файл программы, запускающий flask
